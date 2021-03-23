@@ -63,7 +63,11 @@ public class quakeMovement : MonoBehaviour
     public bool holdJumpToBhop = false;           // When enabled allows player to just hold jump button to keep on bhopping perfectly. Beware: smells like casual.
 
     /*print() style */
+    public bool DebugGui = true;
     public GUIStyle style;
+    // EDITS ADDED
+    public float GUIWidth = 800;
+    public float GUIHeight = 400;
 
     /*FPS Stuff */
     public float fpsDisplayRate = 4.0f; // 4 updates per sec
@@ -372,10 +376,13 @@ public class quakeMovement : MonoBehaviour
 
     private void OnGUI()
     {
-        GUI.Label(new Rect(0, 0, 400, 200), "FPS: " + fps, style);
-        var ups = _controller.velocity;
-        ups.y = 0;
-        GUI.Label(new Rect(0, 15, 400, 200), "Speed: " + Mathf.Round(ups.magnitude * 100) / 100 + "ups", style);
-        GUI.Label(new Rect(0, 30, 400, 200), "Top Speed: " + Mathf.Round(playerTopVelocity * 100) / 100 + "ups", style);
+        if (DebugGui)
+        {
+            GUI.Label(new Rect(0, 0, GUIWidth, GUIHeight), "FPS: " + fps, style);
+            var ups = _controller.velocity;
+            ups.y = 0;
+            GUI.Label(new Rect(0, 25, GUIWidth, GUIHeight), "Speed: " + Mathf.Round(ups.magnitude * 100) / 100 + "ups", style);
+            GUI.Label(new Rect(0, 50, GUIWidth, GUIHeight), "Top Speed: " + Mathf.Round(playerTopVelocity * 100) / 100 + "ups", style);
+        }
     }
 }
