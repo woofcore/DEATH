@@ -23,6 +23,8 @@ public struct Weapon
     public GameObject projectileObject { get; set; } // Object the weapon shoots, if projectile.
     public WeaponType currentWeaponType { get; set; } // What type of weapon is this?
 
+    public static bool canShoot = true;
+
     public Weapon(WeaponType type, GameObject obj, string name)
     {
         this.name = name;
@@ -49,33 +51,34 @@ public struct Weapon
 
         if (currentWeaponType == WeaponType.HITSCAN)
         {
-            RaycastHit hitInfo;
-            float limit = 100f;
-
-            // raycast from centre of screen:
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hitInfo, limit))
+            if (canShoot)
             {
-                // check for entity at raycast:
-
-                string hitTag = hitInfo.transform.tag; // Get tag of HitInfo
-
-                if (hitTag == "enemy") // if hitting an enemy
+                RaycastHit hitInfo;
+                float limit = 100f;
+                // raycast from centre of screen:
+                if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hitInfo, limit))
                 {
-                    // damage entity:
-                    // hitinfo.transform.getcomponent(script).damage(value) or something
-                    PlayImpactSound();
+                    // check for entity at raycast:
 
-                    Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.green);
+                    string hitTag = hitInfo.transform.tag; // Get tag of HitInfo
 
+                    if (hitTag == "enemy") // if hitting an enemy
+                    {
+                        // damage entity:
+                        // hitinfo.transform.getcomponent(script).damage(value) or something
+                        PlayImpactSound();
+
+                        Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.green);
+
+                    }
+                    else // if hitting something other than an enemy, i.e. a wall.
+                    {
+                        Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.red);
+                    }
+
+                    Debug.Log("HIT: " + hitInfo.transform.name + " WITH: " + name);
                 }
-                else // if hitting something other than an enemy, i.e. a wall.
-                {
-                    Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.red);
-                }
-
-                Debug.Log("HIT: " + hitInfo.transform.name + " WITH: " + name);
             }
-
         }
 
         if (currentWeaponType == WeaponType.PROJECTILE || currentWeaponType == WeaponType.HOMING)
@@ -92,7 +95,8 @@ public struct Weapon
     }
     void PlayShootAnimation()
     {
-        //weaponAnimator.SetTrigger("Shoot");
+        canShoot = false;
+        weaponAnimator.SetTrigger("Shoot");
     }
     void PlayShootSound()
     {
@@ -118,6 +122,11 @@ public struct Weapon
     public void Show()
     {
         weaponObject.SetActive(true);
+    }
+
+    private void Event_CanAttack()
+    {
+        canShoot = true;
     }
 
     public enum WeaponType

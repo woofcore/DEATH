@@ -64,11 +64,7 @@ public class PlayerHandler : MonoBehaviour
         if(currentWeapon < 0)
             currentWeapon = Inventory.Count - 1;
 
-        // Stuff to actually do:
-        // - hide old weapon + play respective hide animation
         Inventory[oldWeapon].Hide();
-
-        // - show new weapon + play respective show animation
         Inventory[currentWeapon].Show();
 
         // Debug
