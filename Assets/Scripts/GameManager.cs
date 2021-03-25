@@ -5,8 +5,23 @@ using UnityEngine.VFX;
 
 public class GameManager : MonoBehaviour
 {
-    public void SpawnDecal(Vector3 pos, Quaternion rot, VisualEffect bulletDecal)
+    public void SpawnDecal(Vector3 pos, Quaternion rot, GameObject bulletDecal, AudioClip sound)
     {
-        Instantiate(bulletDecal, pos, rot);
+        var ob = Instantiate(bulletDecal, pos, rot);
+        ob.GetComponent<VisualEffect>().Play();
+
+        var src = ob.GetComponent<AudioSource>();
+        src.PlayOneShot(sound);
+
+        Destroy(ob, 10);
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
+
 }

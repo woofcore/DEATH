@@ -87,7 +87,7 @@ public class quakeMovement : MonoBehaviour
     private float playerTopVelocity = 0.0f;
 
     // Q3: players can queue the next jump just before he hits the ground
-    private bool wishJump = false;
+    public bool wishJump = false;
 
     // Used to display real time fricton values
     private float playerFriction = 0.0f;
@@ -190,7 +190,7 @@ public class quakeMovement : MonoBehaviour
     /**
      * Queues the next jump just like in Q3
      */
-    private void QueueJump()
+    public void QueueJump()
     {
         if (holdJumpToBhop)
         {

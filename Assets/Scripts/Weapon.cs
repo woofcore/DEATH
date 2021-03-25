@@ -20,7 +20,7 @@ public struct Weapon
     public GameObject weaponObject { get; set; } // Object the weapon will appear as.
     public Animator weaponAnimator { get; set; } // Animator the weapon uses.
     public VisualEffect muzzleFlash { get; set; } // VFX for muzzle flash (plays on shoot).
-    public VisualEffect bulletDecal { get; set; }
+    public GameObject bulletDecal { get; set; }
 
     public GameObject projectileObject { get; set; } // Object the weapon shoots, if projectile.
     public WeaponType currentWeaponType { get; set; } // What type of weapon is this?
@@ -28,7 +28,7 @@ public struct Weapon
     public static bool canShoot = true;
     public GameManager gm;
 
-    public Weapon(WeaponType type, GameObject obj, string name, AudioClip shoot, VisualEffect muzzle, VisualEffect decal, float cooldown)
+    public Weapon(WeaponType type, GameObject obj, string name, AudioClip shoot, AudioClip hit, VisualEffect muzzle, GameObject decal, float cooldown)
     {
         this.name = name;
 
@@ -40,7 +40,7 @@ public struct Weapon
         this.coolDownTime = cooldown;
 
         this.shootNoise = shoot;
-        this.hitNoise = null;
+        this.hitNoise = hit;
         this.weaponObject = obj;
         this.projectileObject = null;
         this.weaponAnimator = obj.GetComponent<Animator>();
@@ -66,22 +66,24 @@ public struct Weapon
                 // check for entity at raycast:
 
                 string hitTag = hitInfo.transform.tag; // Get tag of HitInfo
-
-                if (hitTag == "enemy") // if hitting an enemy
+                if (hitTag != "Player")
                 {
-                    // damage entity:
-                    // hitinfo.transform.getcomponent(script).damage(value) or something
-                    PlayImpactSound();
+                    if (hitTag == "enemy") // if hitting an enemy
+                    {
+                        // damage entity:
+                        // hitinfo.transform.getcomponent(script).damage(value) or something
 
-                    Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.green);
+                        Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.green);
 
+                    }
+                    else // if hitting something other than an enemy, i.e. a wall.
+                    {
+                        Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.red);
+                    }
+                    Debug.Log("HIT: " + hitInfo.transform.name + " WITH: " + name);
+                    gm.SpawnDecal(hitInfo.point, Quaternion.LookRotation(hitInfo.normal), bulletDecal, hitNoise);
                 }
-                else // if hitting something other than an enemy, i.e. a wall.
-                {
-                    Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.red);
-                }
-                Debug.Log("HIT: " + hitInfo.transform.name + " WITH: " + name);
-                gm.SpawnDecal(hitInfo.point, Quaternion.identity, bulletDecal);
+                
             }
         }
 
@@ -107,11 +109,18 @@ public struct Weapon
 
     void PlayShootSound()
     {
-        Camera.main.GetComponent<AudioSource>().PlayOneShot(shootNoise);
-    }
-    void PlayImpactSound()
-    {
+        var src = Camera.main.GetComponent<AudioSource>();
+        // Shift Pitch
+        if (src.pitch != 1)
+        {
+            src.pitch = 1;
+        }
+        
+        src.pitch = Random.Range(1f, 1.2f);
+        
+        src.PlayOneShot(shootNoise);
 
+        
     }
 
     public void Hide()

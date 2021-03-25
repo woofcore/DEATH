@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Level Object
   layers:
   - Default
   - TransparentFX
@@ -14,7 +15,7 @@ TagManager:
   - PostProcessing
   - Viewmodel
   - 
-  - 
+  - Render Texture
   - 
   - 
   - 
