@@ -81,7 +81,7 @@ public struct Weapon
                         Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.red);
                     }
                     Debug.Log("HIT: " + hitInfo.transform.name + " WITH: " + name);
-                    gm.SpawnDecal(hitInfo.point, Quaternion.LookRotation(hitInfo.normal), bulletDecal, hitNoise);
+                    gm.SpawnDecal(hitInfo.point, Quaternion.LookRotation(hitInfo.normal), bulletDecal, hitNoise, hitInfo.transform);
                 }
                 
             }

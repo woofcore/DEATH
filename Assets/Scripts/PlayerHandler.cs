@@ -9,7 +9,8 @@ public class PlayerHandler : MonoBehaviour
     public float swaySmoothAmount;
     public float swayRotationMultiplier;
 
-    bool crouching = false;
+    bool isCrouching = false;
+    float initialCameraOffset;
 
     public Transform swayRotationPoint;
     CharacterController cc;
@@ -31,6 +32,8 @@ public class PlayerHandler : MonoBehaviour
     public GameObject pistolShootPoint;
     VisualEffect pistolVFX;
 
+    quakeMovement qm;
+
 
 
     Weapon WEP_Shotgun;
@@ -39,7 +42,9 @@ public class PlayerHandler : MonoBehaviour
     void Start()
     {
         cc = GetComponent<CharacterController>();
+        qm = GetComponent<quakeMovement>();
 
+        initialCameraOffset = qm.playerViewYOffset;
 
         pistolVFX = pistolShootPoint.GetComponent<VisualEffect>();
 
@@ -97,28 +102,20 @@ public class PlayerHandler : MonoBehaviour
             Dash();
         }
 
-        /*
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            if (!crouching)
-            {
-                Crouch();
-            }
+            isCrouching = true;
         }
         if (Input.GetKeyUp(KeyCode.LeftControl))
         {
-
+            isCrouching = false;
         }
-        */
+    }
 
-        // Weapon Sway
-        float swayX = -Input.GetAxis("Mouse X") * swayAmount;
-        float swayY = -Input.GetAxis("Mouse Y") * swayAmount;
-        Vector3 finalSwayPosition = new Vector3(-Input.GetAxis("Horizontal") * swayX, swayY, 0);
-        Inventory[currentWeapon].weaponObject.transform.localPosition = Vector3.Lerp(Inventory[currentWeapon].weaponObject.transform.localPosition, finalSwayPosition + swayInitialPosition, Time.deltaTime * swaySmoothAmount);
-
-        //swayRotationPoint.localRotation = Quaternion.Euler(0, 0, Input.GetAxis("Horizontal") * cc.velocity.magnitude);
-        swayRotationPoint.localRotation = Quaternion.Euler(0, 0, Input.GetAxis("Horizontal") * cc.velocity.magnitude * swayRotationMultiplier);
+    void FixedUpdate()
+    {
+        Crouch();
+        DoWeaponSway();
     }
 
     void SwitchWeapon(int direction)
@@ -152,6 +149,32 @@ public class PlayerHandler : MonoBehaviour
 
         Vector3 move = cc.transform.TransformDirection(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         cc.Move(move * 5f);
+    }
+
+    void Crouch()
+    {
+        if (isCrouching)
+        {
+            qm.playerViewYOffset = 0.2f;
+
+        }
+        if (!isCrouching)
+        {
+            qm.playerViewYOffset = initialCameraOffset;
+        }
+        
+    }
+
+    void DoWeaponSway()
+    {
+        // Weapon Sway
+        float swayX = -Input.GetAxis("Mouse X") * swayAmount;
+        float swayY = -Input.GetAxis("Mouse Y") * swayAmount;
+        Vector3 finalSwayPosition = new Vector3(-Input.GetAxis("Horizontal") * swayX, swayY, 0);
+        Inventory[currentWeapon].weaponObject.transform.localPosition = Vector3.Lerp(Inventory[currentWeapon].weaponObject.transform.localPosition, finalSwayPosition + swayInitialPosition, Time.deltaTime * swaySmoothAmount);
+
+        //swayRotationPoint.localRotation = Quaternion.Euler(0, 0, Input.GetAxis("Horizontal") * cc.velocity.magnitude);
+        swayRotationPoint.localRotation = Quaternion.Euler(0, 0, Input.GetAxis("Horizontal") * cc.velocity.magnitude * swayRotationMultiplier);
     }
 
     IEnumerator ShootCooldown(float t)

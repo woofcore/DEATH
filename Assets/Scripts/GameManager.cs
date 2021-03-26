@@ -5,9 +5,10 @@ using UnityEngine.VFX;
 
 public class GameManager : MonoBehaviour
 {
-    public void SpawnDecal(Vector3 pos, Quaternion rot, GameObject bulletDecal, AudioClip sound)
+    public void SpawnDecal(Vector3 pos, Quaternion rot, GameObject bulletDecal, AudioClip sound, Transform parent)
     {
         var ob = Instantiate(bulletDecal, pos, rot);
+        ob.transform.SetParent(parent);
         ob.GetComponent<VisualEffect>().Play();
 
         var src = ob.GetComponent<AudioSource>();

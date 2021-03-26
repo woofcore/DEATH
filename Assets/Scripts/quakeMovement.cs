@@ -303,6 +303,9 @@ public class quakeMovement : MonoBehaviour
 
         SetMovementDir();
 
+        // Reset the gravity velocity
+        playerVelocity.y = -gravity * Time.deltaTime;
+
         wishdir = new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
         wishdir = transform.TransformDirection(wishdir);
         wishdir.Normalize();
@@ -313,8 +316,7 @@ public class quakeMovement : MonoBehaviour
 
         Accelerate(wishdir, wishspeed, runAcceleration);
 
-        // Reset the gravity velocity
-        playerVelocity.y = -gravity * Time.deltaTime;
+        
 
         if (wishJump)
         {
