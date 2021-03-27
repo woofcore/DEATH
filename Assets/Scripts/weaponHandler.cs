@@ -38,7 +38,7 @@ public class weaponHandler : MonoBehaviour
                 RaycastHit hitInfo;
                 float limit = 100f;
                 // raycast from centre of screen:
-                if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hitInfo, limit))
+                if (Physics.Raycast(main.transform.position, main.transform.forward, out hitInfo, limit))
                 {
                     // check for entity at raycast:
 
@@ -55,7 +55,11 @@ public class weaponHandler : MonoBehaviour
                         }
                         else if (hitTag == "Physics")
                         {
-                            hitInfo.rigidbody.AddForceAtPosition(-hitInfo.normal * force, hitInfo.point);
+                            //hitInfo.rigidbody.AddForceAtPosition(-hitInfo.normal * force, hitInfo.point);
+
+                            Vector3 direction = (main.transform.position - hitInfo.transform.position).normalized;
+
+                            hitInfo.rigidbody.AddForce(-direction * force);
                         }
                         else // if hitting something other than an enemy, i.e. a wall.
                         {
@@ -96,15 +100,18 @@ public class weaponHandler : MonoBehaviour
 
     void SpawnDecal(Vector3 pos, Quaternion rot, Transform hitObject)
     {
-        GameObject ob = new GameObject();
+        GameObject tempobj = new GameObject();
+
+        tempobj.transform.position = pos;
+        tempobj.transform.rotation = rot;
+        tempobj.transform.parent = hitObject;
+
         PropMaterialHandler surface = hitObject.GetComponent<PropMaterialHandler>();
+        VisualEffect vfx = tempobj.AddComponent<VisualEffect>();
+        AudioSource src = tempobj.AddComponent<AudioSource>();
 
-        VisualEffect vfx;
-        AudioSource src;
-
-        ob = Instantiate(ob, pos, rot);
-        vfx = ob.AddComponent<VisualEffect>();
-        src = main.GetComponent<AudioSource>();
+        src.spatialBlend = 1;
+        src.volume = .7f;
 
         // Shift Pitch
         if (src.pitch != 1)
@@ -112,32 +119,31 @@ public class weaponHandler : MonoBehaviour
             src.pitch = 1;
         }
 
-        src.pitch = Random.Range(1f, 1.2f);
+        src.pitch = Random.Range(.8f, 1.4f);
 
         switch (surface.surfaceMaterial)
         {
             case common.surfaceMat.ROCK:
                 vfx.visualEffectAsset = settings.bullet_rock;
-                AudioSource.PlayClipAtPoint(settings.sound_rock, pos);
+                src.PlayOneShot(settings.sound_rock);
                 break;
             case common.surfaceMat.METAL:
                 vfx.visualEffectAsset = settings.bullet_metal;
-                AudioSource.PlayClipAtPoint(settings.sound_metal, pos);
+                src.PlayOneShot(settings.sound_metal);
                 break;
             case common.surfaceMat.FLESH:
                 vfx.visualEffectAsset = settings.bullet_flesh;
-                AudioSource.PlayClipAtPoint(settings.sound_flesh, pos);
+                src.PlayOneShot(settings.sound_flesh);
                 break;
             default:
                 vfx.visualEffectAsset = settings.bullet_default;
-                AudioSource.PlayClipAtPoint(settings.sound_default, pos);
+                src.PlayOneShot(settings.sound_default);
                 break;
         }
 
-        ob.transform.SetParent(hitObject);
         vfx.Play();
 
-        Destroy(ob, 10);
+        Destroy(tempobj, 10);
     }
 
     public void Show()

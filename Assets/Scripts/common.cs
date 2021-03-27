@@ -15,6 +15,8 @@ public class common : MonoBehaviour
     public AudioClip sound_flesh;
     public AudioClip sound_default;
 
+    public GameObject PauseMenu;
+
     public enum surfaceMat
     {
         ROCK,

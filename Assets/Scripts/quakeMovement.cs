@@ -95,8 +95,12 @@ public class quakeMovement : MonoBehaviour
     // Player commands, stores wish commands that the player asks for (Forward, back, jump, etc)
     private Cmd _cmd;
 
+    UIInputHandler uiHandler;
+
     private void Start()
     {
+        uiHandler = GameObject.Find("UI").GetComponent<UIInputHandler>();
+
         // Hide the cursor
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -119,59 +123,63 @@ public class quakeMovement : MonoBehaviour
 
     private void Update()
     {
-        // Do FPS calculation
-        frameCount++;
-        dt += Time.deltaTime;
-        if (dt > 1.0 / fpsDisplayRate)
+        if (!uiHandler.isPaused)
         {
-            fps = Mathf.Round(frameCount / dt);
-            frameCount = 0;
-            dt -= 1.0f / fpsDisplayRate;
+            // Do FPS calculation
+            frameCount++;
+            dt += Time.deltaTime;
+            if (dt > 1.0 / fpsDisplayRate)
+            {
+                fps = Mathf.Round(frameCount / dt);
+                frameCount = 0;
+                dt -= 1.0f / fpsDisplayRate;
+            }
+            /* Ensure that the cursor is locked into the screen */
+            if (Cursor.lockState != CursorLockMode.Locked)
+            {
+                if (Input.GetButtonDown("Fire1"))
+                    Cursor.lockState = CursorLockMode.Locked;
+            }
+
+            /* Camera rotation stuff, mouse controls this shit */
+            rotX -= Input.GetAxisRaw("Mouse Y") * xMouseSensitivity * 0.02f;
+            rotY += Input.GetAxisRaw("Mouse X") * yMouseSensitivity * 0.02f;
+
+            // Clamp the X rotation
+            if (rotX < -90)
+                rotX = -90;
+            else if (rotX > 90)
+                rotX = 90;
+
+            this.transform.rotation = Quaternion.Euler(0, rotY, 0); // Rotates the collider
+            playerView.rotation = Quaternion.Euler(rotX, rotY, 0); // Rotates the camera
+
+
+
+            /* Movement, here's the important part */
+            QueueJump();
+            if (_controller.isGrounded)
+                GroundMove();
+            else if (!_controller.isGrounded)
+                AirMove();
+
+            // Move the controller
+            _controller.Move(playerVelocity * Time.deltaTime);
+
+            /* Calculate top velocity */
+            Vector3 udp = playerVelocity;
+            udp.y = 0.0f;
+            if (udp.magnitude > playerTopVelocity)
+                playerTopVelocity = udp.magnitude;
+
+            //Need to move the camera after the player has been moved because otherwise the camera will clip the player if going fast enough and will always be 1 frame behind.
+            // Set the camera's position to the transform
+            playerView.position = new Vector3(
+                transform.position.x,
+                transform.position.y + playerViewYOffset,
+                transform.position.z);
         }
-        /* Ensure that the cursor is locked into the screen */
-        if (Cursor.lockState != CursorLockMode.Locked)
-        {
-            if (Input.GetButtonDown("Fire1"))
-                Cursor.lockState = CursorLockMode.Locked;
-        }
-
-        /* Camera rotation stuff, mouse controls this shit */
-        rotX -= Input.GetAxisRaw("Mouse Y") * xMouseSensitivity * 0.02f;
-        rotY += Input.GetAxisRaw("Mouse X") * yMouseSensitivity * 0.02f;
-
-        // Clamp the X rotation
-        if (rotX < -90)
-            rotX = -90;
-        else if (rotX > 90)
-            rotX = 90;
-
-        this.transform.rotation = Quaternion.Euler(0, rotY, 0); // Rotates the collider
-        playerView.rotation = Quaternion.Euler(rotX, rotY, 0); // Rotates the camera
-
-
-
-        /* Movement, here's the important part */
-        QueueJump();
-        if (_controller.isGrounded)
-            GroundMove();
-        else if (!_controller.isGrounded)
-            AirMove();
-
-        // Move the controller
-        _controller.Move(playerVelocity * Time.deltaTime);
-
-        /* Calculate top velocity */
-        Vector3 udp = playerVelocity;
-        udp.y = 0.0f;
-        if (udp.magnitude > playerTopVelocity)
-            playerTopVelocity = udp.magnitude;
-
-        //Need to move the camera after the player has been moved because otherwise the camera will clip the player if going fast enough and will always be 1 frame behind.
-        // Set the camera's position to the transform
-        playerView.position = new Vector3(
-            transform.position.x,
-            transform.position.y + playerViewYOffset,
-            transform.position.z);
+        
     }
 
     /*******************************************************************************************************\
