@@ -62,7 +62,7 @@
     <Compile Include="Assets\Scripts\playerManager.cs" />
     <Compile Include="Assets\Scripts\PropMaterialHandler.cs" />
     <Compile Include="Assets\Scripts\weaponHandler.cs" />
-    <Compile Include="Assets\Scripts\UIInputHandler.cs" />
+    <Compile Include="Assets\Scripts\GameManager.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

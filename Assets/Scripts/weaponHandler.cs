@@ -61,12 +61,22 @@ public class weaponHandler : MonoBehaviour
 
                             hitInfo.rigidbody.AddForce(-direction * force);
                         }
+                        else if (hitTag == "Breakable")
+                        {
+                            if (hitInfo.transform.GetComponent<PropMaterialHandler>().isBreakable)
+                            {
+                                hitInfo.transform.GetComponent<PropMaterialHandler>().Damage(1);
+                            }
+                        }
                         else // if hitting something other than an enemy, i.e. a wall.
                         {
                             Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.red);
                         }
                         Debug.Log("HIT: " + hitInfo.transform.name + " WITH: " + name);
-                        SpawnDecal(hitInfo.point, Quaternion.LookRotation(hitInfo.normal), hitInfo.transform);
+                        if (hitInfo.transform.GetComponent<PropMaterialHandler>())
+                        {
+                            SpawnDecal(hitInfo.point, Quaternion.LookRotation(hitInfo.normal), hitInfo.transform);
+                        }
                     }
 
                 }
@@ -108,7 +118,32 @@ public class weaponHandler : MonoBehaviour
 
         PropMaterialHandler surface = hitObject.GetComponent<PropMaterialHandler>();
         VisualEffect vfx = tempobj.AddComponent<VisualEffect>();
-        AudioSource src = tempobj.AddComponent<AudioSource>();
+        AudioSource src;
+
+
+        switch (surface.surfaceMaterial)
+        {
+            case common.surfaceMat.ROCK:
+                vfx.visualEffectAsset = settings.bullet_rock;
+                src = common.PlayClipAt(settings.sound_rock, pos);
+                break;
+            case common.surfaceMat.METAL:
+                vfx.visualEffectAsset = settings.bullet_metal;
+                src = common.PlayClipAt(settings.sound_metal, pos);
+                break;
+            case common.surfaceMat.FLESH:
+                vfx.visualEffectAsset = settings.bullet_flesh;
+                src = common.PlayClipAt(settings.sound_flesh, pos);
+                break;
+            case common.surfaceMat.WOOD:
+                vfx.visualEffectAsset = settings.bullet_wood;
+                src = common.PlayClipAt(settings.sound_wood, pos);
+                break;
+            default:
+                vfx.visualEffectAsset = settings.bullet_default;
+                src = common.PlayClipAt(settings.sound_default, pos);
+                break;
+        }
 
         src.spatialBlend = 1;
         src.volume = .7f;
@@ -120,26 +155,6 @@ public class weaponHandler : MonoBehaviour
         }
 
         src.pitch = Random.Range(.8f, 1.4f);
-
-        switch (surface.surfaceMaterial)
-        {
-            case common.surfaceMat.ROCK:
-                vfx.visualEffectAsset = settings.bullet_rock;
-                src.PlayOneShot(settings.sound_rock);
-                break;
-            case common.surfaceMat.METAL:
-                vfx.visualEffectAsset = settings.bullet_metal;
-                src.PlayOneShot(settings.sound_metal);
-                break;
-            case common.surfaceMat.FLESH:
-                vfx.visualEffectAsset = settings.bullet_flesh;
-                src.PlayOneShot(settings.sound_flesh);
-                break;
-            default:
-                vfx.visualEffectAsset = settings.bullet_default;
-                src.PlayOneShot(settings.sound_default);
-                break;
-        }
 
         vfx.Play();
 
@@ -155,6 +170,8 @@ public class weaponHandler : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+
 
 
 }

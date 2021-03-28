@@ -95,11 +95,11 @@ public class quakeMovement : MonoBehaviour
     // Player commands, stores wish commands that the player asks for (Forward, back, jump, etc)
     private Cmd _cmd;
 
-    UIInputHandler uiHandler;
+    GameManager gm;
 
     private void Start()
     {
-        uiHandler = GameObject.Find("UI").GetComponent<UIInputHandler>();
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 
         // Hide the cursor
         Cursor.visible = false;
@@ -123,7 +123,7 @@ public class quakeMovement : MonoBehaviour
 
     private void Update()
     {
-        if (!uiHandler.isPaused)
+        if (!gm.isPaused)
         {
             // Do FPS calculation
             frameCount++;
