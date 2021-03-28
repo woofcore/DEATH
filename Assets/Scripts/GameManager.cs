@@ -10,6 +10,19 @@ public class GameManager : MonoBehaviour
 
     public bool isPaused = false;
 
+    public static float gameStartTime;
+    public static AudioSource gameMusicPlayer;
+    public AudioClip levelMusic;
+
+    private void Start()
+    {
+        gameMusicPlayer = GetComponent<AudioSource>();
+        gameStartTime = Time.time;
+
+        gameMusicPlayer.clip = levelMusic;
+        gameMusicPlayer.loop = true;
+        gameMusicPlayer.Play();
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape) && !isPaused)
@@ -44,6 +57,7 @@ public class GameManager : MonoBehaviour
         pauseMenu.SetActive(true);
         Time.timeScale = 0;
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         isPaused = true;
     }
 
@@ -52,6 +66,7 @@ public class GameManager : MonoBehaviour
         pauseMenu.SetActive(false);
         Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         isPaused = false;
     }
 
