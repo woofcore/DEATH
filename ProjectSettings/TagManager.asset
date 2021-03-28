@@ -4,7 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Level Object
+  - checkpoint
+  - hazard
+  - Physics
+  - Breakable
   layers:
   - Default
   - TransparentFX
@@ -12,10 +15,10 @@ TagManager:
   - 
   - Water
   - UI
-  - PostProcessing
   - Viewmodel
+  - Low-Res Display
   - 
-  - Render Texture
+  - 
   - 
   - 
   - 
