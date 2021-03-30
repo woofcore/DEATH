@@ -61,8 +61,9 @@
     <Compile Include="Assets\Scripts\common.cs" />
     <Compile Include="Assets\Scripts\playerManager.cs" />
     <Compile Include="Assets\Scripts\PropMaterialHandler.cs" />
-    <Compile Include="Assets\Scripts\weaponHandler.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\weaponHandler.cs" />
+    <Compile Include="Assets\Scripts\enemyHandler.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

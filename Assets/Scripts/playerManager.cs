@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class playerManager : MonoBehaviour
 {
+    public int health;
+
     private int currentWeapon = 0;
     public GameObject pistol;
 
@@ -100,6 +102,10 @@ public class playerManager : MonoBehaviour
             gm.SetCheckpoint(other.transform);
             Debug.Log("Checkpoint! " + gm.lastCheckpoint);
         }
+        if (colTag == "enemy")
+        {
+            health -= other.GetComponent<enemyHandler>().contactDamage;
+        }
     }
 
     void SwitchWeapon(int direction)
@@ -149,6 +155,7 @@ public class playerManager : MonoBehaviour
         //swayRotationPoint.localRotation = Quaternion.Euler(0, 0, Input.GetAxis("Horizontal") * cc.velocity.magnitude);
         swayRotationPoint.localRotation = Quaternion.Euler(0, 0, Input.GetAxis("Horizontal") * cc.velocity.magnitude * swayRotationMultiplier);
     }
+
 
     IEnumerator startCooldown(float t)
     {

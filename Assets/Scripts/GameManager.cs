@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public Transform lastCheckpoint;
-    public GameObject player;
+    public playerManager player;
     public GameObject pauseMenu;
 
     public bool isPaused = false;
@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     {
         gameMusicPlayer = GetComponent<AudioSource>();
         gameStartTime = Time.time;
+
+        player = GameObject.Find("Player").GetComponent<playerManager>();
 
         gameMusicPlayer.clip = levelMusic;
         gameMusicPlayer.loop = true;
@@ -32,6 +34,11 @@ public class GameManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Escape) && isPaused)
         {
             UnPause();
+        }
+
+        if (player.health <= 0)
+        {
+            DoPlayerDeath();
         }
     }
 
@@ -50,6 +57,13 @@ public class GameManager : MonoBehaviour
         player.GetComponent<CharacterController>().enabled = true;
         player.GetComponent<quakeMovement>().enabled = true;
 
+    }
+
+    public void DoPlayerDeath()
+    {
+        // Show death UI
+
+        // Disable input
     }
 
     public void Pause()
