@@ -19,9 +19,11 @@ public class weaponHandler : MonoBehaviour
     private Animator weaponAnimator;
     private Camera main;
     private common settings;
+    private GameManager gm;
 
     void Start()
     {
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         weaponAnimator = GetComponent<Animator>();
         main = Camera.main;
         settings = GameObject.Find("common").GetComponent<common>();
@@ -66,6 +68,7 @@ public class weaponHandler : MonoBehaviour
                             if (hitInfo.transform.GetComponent<PropMaterialHandler>().isBreakable)
                             {
                                 hitInfo.transform.GetComponent<PropMaterialHandler>().Damage(1);
+                                StartCoroutine(gm.ShowHitmarker());
                             }
                         }
                         else // if hitting something other than an enemy, i.e. a wall.

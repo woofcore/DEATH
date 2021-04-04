@@ -84,6 +84,7 @@ public class playerManager : MonoBehaviour
             {
                 Zoom("out");
             }
+
         }
 
         DoWeaponSway();
@@ -96,11 +97,6 @@ public class playerManager : MonoBehaviour
         {
             Debug.Log("Hazard! " + other.transform.position);
             gm.GoToCheckpoint();
-        }
-        if (colTag == "checkpoint")
-        {
-            gm.SetCheckpoint(other.transform);
-            Debug.Log("Checkpoint! " + gm.lastCheckpoint);
         }
         if (colTag == "enemy")
         {
