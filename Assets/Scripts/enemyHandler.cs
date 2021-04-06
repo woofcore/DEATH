@@ -7,15 +7,19 @@ public class enemyHandler : MonoBehaviour
     public int health;
     public int contactDamage;
 
-    // Start is called before the first frame update
+    Transform player;
+
     void Start()
     {
-        
+        player = GameObject.Find("Player").GetComponent<Transform>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
+        Quaternion lookRotation = Quaternion.LookRotation (player.position - transform.position);
+        lookRotation *= Quaternion.Euler(0, 90, 0);
+
         
+        transform.localRotation = Quaternion.Euler(0, lookRotation.eulerAngles.y, 0);
     }
 }

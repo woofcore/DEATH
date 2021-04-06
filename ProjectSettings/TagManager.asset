@@ -8,6 +8,7 @@ TagManager:
   - hazard
   - Physics
   - Breakable
+  - Enemy
   layers:
   - Default
   - TransparentFX
