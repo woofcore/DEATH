@@ -9,7 +9,11 @@ public class GameManager : MonoBehaviour
     public playerManager player;
     public GameObject pauseMenu;
     public GameObject hitmarker;
+    
     public Text objectiveTextObject;
+    public Text healthTextObject;
+    public Text ammoTextObject;
+    public Text scoreTextObject;
 
     public bool isPaused = false;
 
@@ -21,6 +25,8 @@ public class GameManager : MonoBehaviour
     public float pausedAudioVolume = 0.4f;
     private float initialAudioLowPassCutoff;
     public float pausedAudioLowPassCutoff = 400f;
+
+    public int score = 0;
 
     private void Start()
     {
@@ -51,6 +57,8 @@ public class GameManager : MonoBehaviour
         {
             DoPlayerDeath();
         }
+
+        UpdateHealthText();
     }
 
     public void SetCheckpoint(Transform location)
@@ -80,8 +88,17 @@ public class GameManager : MonoBehaviour
     public void DoPlayerDeath()
     {
         // Show death UI
-
+        Debug.Log("Player died :(");
         // Disable input
+    }
+
+    public void UpdateScore(int amnt){
+        score += amnt;
+        scoreTextObject.text = score.ToString();
+    }
+
+    public void UpdateHealthText(){
+        healthTextObject.text = player.currentHealth.ToString();
     }
 
     public void Pause()

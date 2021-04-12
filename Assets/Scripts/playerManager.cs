@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class playerManager : MonoBehaviour
 {
-    public int health;
-
+    public int health = 100;
+    public int overhealAmount = 50;
+    public bool invulnerable = false;
+    public int currentHealth;
     private int currentWeapon = 0;
     public GameObject pistol;
 
@@ -45,6 +47,8 @@ public class playerManager : MonoBehaviour
                 Inventory[i].Hide();
             }
         }
+
+        currentHealth = health;
     }
 
     void Update()
@@ -88,6 +92,10 @@ public class playerManager : MonoBehaviour
         }
 
         DoWeaponSway();
+
+        if(currentHealth <= 0){
+
+        }
     }
 
     private void OnTriggerEnter(Collider other) // Do level trigger stuff.
@@ -98,12 +106,22 @@ public class playerManager : MonoBehaviour
             Debug.Log("Hazard! " + other.transform.position);
             gm.GoToCheckpoint();
         }
-        if (colTag == "enemy")
+        if (colTag == "Enemy")
         {
-            health -= other.GetComponent<enemyHandler>().contactDamage;
+            health -= other.GetComponent<enemyHandler>().contactDamageToPlayer;
         }
     }
 
+    public void TakeDamage(int dmg){
+        if(!invulnerable){
+            currentHealth -= dmg;
+        }
+    }
+    public void Heal(int amnt){
+        if(currentHealth <= (health + overhealAmount)){
+            currentHealth += amnt;
+        }
+    }
     void SwitchWeapon(int direction)
     {
         // Temporarily store the old weapon,

@@ -7,7 +7,7 @@ public class weaponHandler : MonoBehaviour
 {
     public string weaponName = "Gun"; // The name of this weapon.
     public common.WeaponType weaponType;
-    public float damage = 10f; // How much damage this weapon inflicts.
+    public int damage = 10; // How much damage this weapon inflicts.
     public float force = 100f; // How much force this weapon exerts on rigidbodies.
     public float cooldown = .4f; // How long to wait between shots.
     public int shotCount = 1; // How many bullets the weapon shoots every shot.
@@ -47,13 +47,16 @@ public class weaponHandler : MonoBehaviour
                     string hitTag = hitInfo.transform.tag; // Get tag of HitInfo
                     if (hitTag != "Player")
                     {
-                        if (hitTag == "enemy") // if hitting an enemy
+                        if (hitTag == "Enemy") // if hitting an enemy
                         {
-                            // damage entity:
-                            // hitinfo.transform.getcomponent(script).damage(value) or something
 
                             Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.green);
+                            Debug.Log("Hit Enemy " + hitInfo.transform.name);
+                            StartCoroutine(gm.ShowHitmarker());
 
+                            enemyHandler eh = hitInfo.transform.GetComponent<enemyHandler>();
+                            eh.TakeDamage(damage);
+                            gm.UpdateScore(eh.scoreWorth);
                         }
                         else if (hitTag == "Physics")
                         {
@@ -65,17 +68,19 @@ public class weaponHandler : MonoBehaviour
                         }
                         else if (hitTag == "Breakable")
                         {
-                            if (hitInfo.transform.GetComponent<PropMaterialHandler>().isBreakable)
+                            PropMaterialHandler pmh = hitInfo.transform.GetComponent<PropMaterialHandler>();
+                            if (pmh.isBreakable)
                             {
-                                hitInfo.transform.GetComponent<PropMaterialHandler>().Damage(1);
+                                pmh.Damage(1);
                                 StartCoroutine(gm.ShowHitmarker());
+                                gm.UpdateScore(pmh.scoreWorth);
                             }
                         }
                         else // if hitting something other than an enemy, i.e. a wall.
                         {
                             Debug.DrawRay(Camera.main.transform.position, hitInfo.point, Color.red);
                         }
-                        Debug.Log("HIT: " + hitInfo.transform.name + " WITH: " + name);
+                        //Debug.Log("HIT: " + hitInfo.transform.name + " WITH: " + name);
                         if (hitInfo.transform.GetComponent<PropMaterialHandler>())
                         {
                             SpawnDecal(hitInfo.point, Quaternion.LookRotation(hitInfo.normal), hitInfo.transform);

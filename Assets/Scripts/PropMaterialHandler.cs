@@ -8,6 +8,7 @@ public class PropMaterialHandler : MonoBehaviour
     public common.surfaceMat surfaceMaterial;
     public bool isBreakable = false;
     public int health;
+    public int scoreWorth = 10;
 
     public void Damage(int amount)
     {

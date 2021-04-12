@@ -1,6 +1,3 @@
 Base path: '/home/woof/Unity/Hub/Editor/2021.1.1f1/Editor/Data', plugins path '/home/woof/Unity/Hub/Editor/2021.1.1f1/Editor/Data/PlaybackEngines'
 Cmd: initializeCompiler
 
-Cmd: shutdown
-
-Quitting shader compiler process
