@@ -9,6 +9,7 @@ TagManager:
   - Physics
   - Breakable
   - Enemy
+  - Level Object
   layers:
   - Default
   - TransparentFX
@@ -45,4 +46,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: sort 1
+    uniqueID: 2227824805
     locked: 0
